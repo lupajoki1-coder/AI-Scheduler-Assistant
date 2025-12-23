@@ -7,7 +7,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="manifest" href="/manifest.json">
-    <title>My Assistant</title>
+    <!-- Mengganti Judul Browser -->
+    <title>Asisten Jadwal dan Tugas</title>
     
     <!-- Dependencies -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
@@ -24,7 +25,7 @@
             background-color: #F8FAFC; 
             margin: 0; padding: 0;
             width: 100%; height: 100%; 
-            overflow: hidden; /* Mencegah scroll pada body */
+            overflow: hidden; 
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -53,7 +54,7 @@
             border-bottom: 1px solid rgba(0,0,0,0.05); 
         }
 
-        /* SAFE AREA INSETS (PENTING untuk Mobile) */
+        /* SAFE AREA INSETS */
         .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
         .pt-safe { padding-top: env(safe-area-inset-top, 20px); }
     </style>
@@ -64,7 +65,7 @@
     <script type="text/babel">
         const App = () => {
             const [messages, setMessages] = React.useState([
-                { id: 1, type: 'bot', text: '👋 Halo! Saya asisten pribadi Anda.\nKatakan saja rencananya, saya yang atur jadwalnya.', timestamp: new Date() }
+                { id: 1, type: 'bot', text: '👋 Halo! Saya Asisten Jadwal & Tugas Anda.\nKatakan saja rencananya, saya yang atur.', timestamp: new Date() }
             ]);
             const [input, setInput] = React.useState("");
             const [isLoading, setIsLoading] = React.useState(false);
@@ -123,7 +124,9 @@
 
                 const res = await processAI(input);
                 if (res.status === 'VALID') {
-                    const d = { ...res, uuid: crypto.randomUUID() };
+                    // Fallback for randomUUID if not available in insecure contexts
+                    const uuid = (typeof crypto.randomUUID === 'function') ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36);
+                    const d = { ...res, uuid: uuid };
                     setDraft(d);
                     addMsg(res.reply, true, d);
                 } else {
@@ -181,7 +184,6 @@
 
             // --- MAIN APP ---
             return (
-                // Menggunakan [100dvh] (Dynamic Viewport Height) untuk mobile browser
                 <div className="flex h-[100dvh] w-full justify-center bg-slate-50 overflow-hidden">
                     <div className="w-full max-w-md bg-white flex flex-col h-full sm:h-[95dvh] sm:my-auto sm:rounded-[32px] sm:shadow-2xl sm:border border-slate-100 relative overflow-hidden">
                         
@@ -193,7 +195,7 @@
                                         <i className="fa-solid fa-calendar-check text-white"></i>
                                     </div>
                                     <div>
-                                        <h1 className="font-bold text-slate-800 text-base">Assistant</h1>
+                                        <h1 className="font-bold text-slate-800 text-sm">Asisten Jadwal & Tugas</h1>
                                         <div className="flex items-center gap-1.5">
                                             <span className="w-2 h-2 bg-green-400 rounded-full"></span>
                                             <span className="text-xs text-slate-500 font-medium">Online</span>
